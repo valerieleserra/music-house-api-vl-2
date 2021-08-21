@@ -2,14 +2,20 @@ const functions = require("firebase-functions");
 
 const express = require('express')
 const cors = require('cors')
-const { newUser } = require('./src/users')
+const { newUser, newBooking, getAllBookings, getOneBooking, updateBooking, deleteBooking } = require('./src/index')
 
 const app = express()
 app.use(cors())
 
 //route here 
+app.get('/bookings/:bookingId', getOneBooking)
+app.get('/bookings', getAllBookings)
+
 app.post('/users', newUser)
-app.get('/users', getUsers)
+app.post('/bookings', newBooking)
+
+app.patch('/bookings/:bookingId', updateBooking)
+app.delete('/bookings/:bookingId', deleteBooking)
 
 
 exports.app = functions.https.onRequest(app)
