@@ -1,25 +1,40 @@
 const admin = require('firebase-admin')
 const { connectFirestore } = require('./firestore')
 
-exports.getAllBookings = (req, res) => {
+// exports.getAllBookingsByEmail = (req, res) => {
+//   const db = connectFirestore()
+//   const {email} = req.query
+//   db.collection('bookings').sortBy('date','desc')
+//     .get(bookingsCollection) => {
+//       let booking = doc.data()
+//       booking.email = doc.email
+//       return booking
+//     })
+//   .catch(err => res.status(500).send(err))
+// }
+
+exports.getAllBookingsByEmail = (req, res) => {
   const db = connectFirestore()
-  db.collection('bookings')
+   db.collection(`bookings`)
+    .orderBy('date','desc')
     .get()
-    .then((collection) => {
-      let allBookings = []
-      collection.forEach((doc) => {
+    .then(bookingCollection => {
+      const bookingArray = bookingCollection.docs.map(doc => {
         let booking = doc.data()
         booking.id = doc.id
-        allBookings.push(booking)
+        return booking
       })
-      res.send(allBookings)
+      res.send(bookingArray)
     })
-    .catch((err) => res.send('Error retrieving bookings'))
+    .catch((err) => res.send({
+      message: 'Bookings not showing'
+    }))
 }
 
 exports.getOneBooking = (req, res) => {
   const db = connectFirestore()
   const { bookingId } = req.params
+  console.log(bookingId)
   db.collection('bookings')
   .doc(bookingId)
   .get()
