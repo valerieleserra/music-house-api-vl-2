@@ -29,9 +29,10 @@ exports.getOneBooking = (req, res) => {
 exports.newUser = (req, res) => {
   const db = connectFirestore()
   const newData = req.body
+  console.log(newData)
   db.collection('users')
     .add(newData)
-    .then(() => res.send('User successfully created'))
+    .then(() => res.json('User successfully created'))
     .catch((err) => res.send('User not created'))
 }
 
@@ -40,8 +41,8 @@ exports.newBooking = (req, res) => {
   const newData = req.body
   db.collection('bookings')
     .add(newData)
-    .then(() => this.getAllBookings(req, res))
-    .catch((err) => res.send('Error creating new booking'))
+    .then(docRef => res.json(docRef))
+    .catch((err) => res.send( err + 'Error creating new booking'))
 }
 
 exports.updateBooking = (req, res) => {
